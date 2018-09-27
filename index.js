@@ -22,15 +22,16 @@ exports.childRemoved=contactsRef.onDelete(deleteIndexRecord);
 function addOrUpdateIndexRecord(contact) {
   console.log("The function addOrUpdateIndexRecord is running!");
   // Get Firebase object
-  const record = contact.data.val(); 
+  const record = contact.val(); 
   
   // Specify Algolia's objectID using the Firebase object key
-  record.objectID = contact.data.key;
+  record.objectID = contact.key;
   // Add or update object
   return index 
     .saveObject(record)
     .then(() => {
       console.log('Firebase object indexed in Algolia', record.objectID);
+      return null;
     })
     .catch(error => {
       console.error('Error when indexing contact into Algolia', error);
@@ -40,12 +41,13 @@ function addOrUpdateIndexRecord(contact) {
 
 function deleteIndexRecord(contact) {
   // Get Algolia's objectID from the Firebase object key
-  const objectID = contact.data.key; 
+  const objectID = contact.key; 
   // Remove the object from Algolia
   return index
     .deleteObject(objectID)
     .then(() => {
       console.log('Firebase object deleted from Algolia', objectID);
+      return null;
     })
     .catch(error => {
       console.error('Error when deleting contact from Algolia', error);
